@@ -15,6 +15,8 @@ with open('/Users/Mayank/IdeaProjects/Vettery/present/next_week.json') as json_d
     
     candidate_prof=dict()  # dictionary , key - name of candidate , value - (sum of all the scores of skills) / (total number of skills)
 
+    # assigning average score of skills to each candidate
+
     for i in range(0,len(next_week_data)):
     	candidate_skills=next_week_data[i]['Tag']               # gets all the skills of a candidate
     	candidate_fname=next_week_data[i]['User']['first_name'] # gets first name of candidate
