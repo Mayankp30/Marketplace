@@ -1,61 +1,31 @@
-from jsonmerge import merge
+# Script Name   : prediction.py
+# Author        : Mayank Purohit
+# Created       : 21 Oct 2016
+# Last Modified : 
+# Version       : 1.0
+
+import induction as ind
 import json
-import glob
-import itertools as itt
-
-read_files = glob.glob('/Users/Mayank/IdeaProjects/Vettery/past/*.json')
-output_list = []
-
-for f in read_files:
-    with open(f, "rb") as infile:
-        output_list.append(json.load(infile))
-
-with open("merged_file.json", "wb") as outfile:
-    json.dump(output_list, outfile)
 
 
-with open('merged_file.json') as json_data:
-		allweekdata = json.load(json_data)
-		allweeklist = list(itt.chain.from_iterable(allweekdata))
-		
-		infolist=[]
-		all_skill = []
-		for i in range (0,len(allweeklist)):
-			interview_skill = [allweeklist[i]['User']['interview_count'], allweeklist[i]['Tag']]
-			all_skill.append(allweeklist[i]['Tag'])
-			infolist.append(interview_skill)
+historical_scores=ind.scores_skill
 
-		_skills = list(itt.chain.from_iterable(all_skill))
-		
-		
-		unique_skill_set = list(set(_skills))
-		output_dict = dict()
-		for i in range (0,len(unique_skill_set)):
-			
-			student_count=0
-			total_interview_count=0
-			for j in range(0,len(infolist)):
-				stat=iter(infolist[j])
-				k=iter(stat)
-				interview_count=int(k.next())
-				skills=k.next()
-				if unique_skill_set[i] in skills:
-					student_count=student_count+1
-					total_interview_count=total_interview_count+interview_count
-			output_dict[unique_skill_set[i]]=total_interview_count/student_count
-		print output_dict
-		
-		maximum = max(output_dict, key=output_dict.get)
-		minimum = min(output_dict, key=output_dict.get)
-		
-		MAX = (output_dict[maximum])
-		MIN = (output_dict[minimum])
+with open('/Users/Mayank/IdeaProjects/Vettery/present/next_week.json') as json_data:
+    next_week_data = json.load(json_data)
+    
+    candidate_prof=dict()  # dictionary , key - name of candidate , value - (sum of all the scores of skills) / (total number of skills)
 
+    for i in range(0,len(next_week_data)):
+    	candidate_skills=next_week_data[i]['Tag']               # gets all the skills of a candidate
+    	candidate_fname=next_week_data[i]['User']['first_name'] # gets first name of candidate
+    	candidate_lname=next_week_data[i]['User']['last_name']  # gets last name of candidate
+    	name=candidate_fname+' '+candidate_lname                # first name + last name of candidate
+    	candidate_avg_score= sum([historical_scores[x] for x in candidate_skills])/len(candidate_skills)
+    	candidate_prof[name]=candidate_avg_score 
+    
+    most_requested_candidate= max(candidate_prof, key=candidate_prof.get) # gets key-name of candidate with highest average score 
+    
+    the_winner = most_requested_candidate
 
-		scores_skill=dict()
-		score=0
+    print 'The candidate with the most interviews should be...' + the_winner + '\n'
 
-		for key, value in output_dict.iteritems():
-			ratio = value
-			score = 10 + ((90)/(MAX-MIN))*(ratio-MIN)
-			scores_skill[key]=score
