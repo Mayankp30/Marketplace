@@ -47,19 +47,26 @@ with open('merged_file.json') as json_data:
 			output_dict[unique_skill_set[i]]=total_interview_count/student_count
 		print output_dict
 		
+
+
 		maximum = max(output_dict, key=output_dict.get)
-		print maximum
-
-
+		minimum = min(output_dict, key=output_dict.get)
 		
-
-				
-				
-
-								
-
+		MAX = (output_dict[maximum])
+		MIN = (output_dict[minimum])
+		print "Max",type(MAX)
+		print "Min",type(MIN)
 
 
+		scores_skill=dict()
+		score=0
+		for key, value in output_dict.iteritems():
+			ratio = value
+			score = MIN + ((100-10)/(MAX-MIN))*(ratio-MIN)
+			scores_skill[key]=score
+		print scores_skill
+			
+		
 
 		the_winner = 'Mayank'
 		print 'The candidate with the most interviews should be...' + the_winner + '\n'
